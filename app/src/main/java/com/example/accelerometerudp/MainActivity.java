@@ -70,7 +70,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         Log.i("onSensorChanged","x: " + x + " y: " + y + " z: " + z + " action: " + action);
 
-        if ( x < -1.5 )
+        float INIT_TORQUE = 600;
+
+        if ( ( y > 6.5 && y < 8.5 ) && ( x < -1.5 ) )
         {
             int speed = (int)(400 - ( 120 * x ));
             String command = "R-" + speed;
@@ -78,7 +80,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.i("onSensorChanged", "goRigth " + command);
             action = "goRigth " + command;
         }
-        else if ( x > 1.5 )
+        else if ( ( y > 6.5 && y < 8.5 ) && ( x > 1.5 ) )
         {
             int speed = (int)(400 + ( 120 * x ));
             String command = "L-" + speed;
@@ -86,21 +88,53 @@ public class MainActivity extends Activity implements SensorEventListener {
             Log.i("onSensorChanged", "goLeft " + command);
             action = "goLeft " + command;
         }
-        else if ( y < 6.5 && y > 1.0 )
+        else if ( y < 6.5 && ( x > -1.5 && x < 1.5 ) )
         {
-            int speed = (int)(1023 - ( 100 * y ));
+            int speed = (int)(1023 - ( 62 * y ));
             String command = "F-" + speed;
             new Thread(new ClientSend(command)).start();
             Log.i("onSensorChanged", "goAhead " + command);
             action = "goAhead " + command;
         }
-        else if ( y > 8.5 )
+        else if ( y < 6.5 && ( x < -1.5 ) )
+        {
+            int speed = (int)(1023 - ( 62 * y ));
+            String command = "I-" + speed;
+            new Thread(new ClientSend(command)).start();
+            Log.i("onSensorChanged", "goAhead-Rigth " + command);
+            action = "goAhead-Rigth " + command;
+        }
+        else if ( y < 6.5 && ( x > 1.5 ) )
+        {
+            int speed = (int)(1023 - ( 62 * y ));
+            String command = "G-" + speed;
+            new Thread(new ClientSend(command)).start();
+            Log.i("onSensorChanged", "goAhead-Left " + command);
+            action = "goAhead-Left " + command;
+        }
+        else if ( y > 8.5 && ( x > -1.5 && x < 1.5 ) )
         {
             int speed = (int)(400 + ( 60 * ((y - 8.5) * 10)));
             String command = "B-" + speed;
             new Thread(new ClientSend(command)).start();
             Log.i("onSensorChanged","goBack " + command);
             action = "goBack " + command;
+        }
+        else if ( y > 8.5 && ( x < -1.5 ) )
+        {
+            int speed = (int)(400 + ( 60 * ((y - 8.5) * 10)));
+            String command = "J-" + speed;
+            new Thread(new ClientSend(command)).start();
+            Log.i("onSensorChanged","goBack-Rigth " + command);
+            action = "goBack-Rigth " + command;
+        }
+        else if ( y > 8.5 && ( x > 1.5 ) )
+        {
+            int speed = (int)(400 + ( 60 * ((y - 8.5) * 10)));
+            String command = "H-" + speed;
+            new Thread(new ClientSend(command)).start();
+            Log.i("onSensorChanged","goBack-Left " + command);
+            action = "goBack-Left " + command;
         }
         else if ( action != "goStop" )
         {
